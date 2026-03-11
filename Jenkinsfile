@@ -1,66 +1,32 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'MAVEN_HOME' // Make sure this matches your Jenkins global tool config
-    }
-
     stages {
-        stage('Welcome Stage') {
+
+        stage('Build') {
             steps {
-                echo "Welcome to Pipeline"
+                echo "Building Maven Project"
+                sh 'mvn clean package'
             }
         }
 
-        stage('Maven Build') {
+        stage('Deploy to Dev') {
+            when {
+                branch 'develop'
+            }
             steps {
-                bat 'mvn clean install' // Includes test by default
+                echo "Deploying to Dev Environment"
             }
         }
 
-        stage('Run Tests') {
+        stage('Deploy to Production') {
+            when {
+                branch 'master'
+            }
             steps {
-                echo "Running Unit Tests"
-                // Optional: You can explicitly run 'mvn test' here
-                bat 'mvn test'
+                echo "Deploying to Production Environment"
             }
         }
 
-        stage('Publish Test Results') {
-            steps {
-                junit 'target/surefire-reports/*.xml' // Standard JUnit report location for Maven
-            }
-        }
-
-        stage('Build Success') {
-            steps {
-                echo "Build Successful"
-            }
-        }
     }
 }
-
-
-// pipeline {
-//     agent any
-//     tools {
-//         maven 'MAVEN_HOME'
-//     }
-//     stages {
-//         stage('Welcome Stage') {
-//             steps {
-//                 echo "Welcome to Pipeline"
-//             }
-//         }
-//         stage('Maven Build') {
-//             steps {
-//                 bat 'mvn install'
-//             }
-//         }
-//         stage('Build Success') {
-//             steps {
-//                 echo "Build Successful"
-//             }
-//         }
-//     }
-// }
