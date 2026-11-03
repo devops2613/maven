@@ -14,7 +14,7 @@ public class myCalci {
     }
 
     int div(int a, int b) {
-        return a * b;
+        return a / b;
     }
 
 
